@@ -45,12 +45,12 @@ def main():
 
     # EXEMPLO DE ATUALIZAÇÕES:
     print("ATUALIZAÇÕES")
-    novos_valores = menu_gerenciar_autor.cadastrar({
+    novos_valores = menu_gerenciar_autor.atualizar({
         "id_autor": int,
         "nome": str,
         "nacionalidade": str
     })
-    resultado = menu_gerenciar_livro.cadastrar({
+    resultado = menu_gerenciar_livro.atualizar({
         "id_livro": int,
         "id_autor": int,
         "titulo": str,
