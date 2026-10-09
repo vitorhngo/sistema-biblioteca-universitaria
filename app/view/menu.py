@@ -1,63 +1,105 @@
-import sys
-from pathlib import Path
-
-ROOT_DIR = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT_DIR))
-
-from view.submenu import SubMenu
-
+#XXX: Não deve ser chamado no Controller.
+'''
+menu.py: Contém a classe de Menus.
+Esse arquivo é usado somente por sistema_view.py
+'''
 class Menu:
-    def __init__(self, autor, livro) -> None:
-        self.submenus = {
-            "1": SubMenu("Gerenciar autor", autor),
-            "2": SubMenu("Gerenciar livro", livro)
-        }
-        self.max_opcoes = len(self.submenus) + 1 # Adiciona 1 em max para cobrir a opção de sair/voltar
+    def __init__(self, nome: str, opcoes: dict[int, str], msg_ultima_opcao = "Voltar") -> None:
+        self.nome = nome
+        self.opcoes = opcoes
+        self.msg_ultima_opcao = msg_ultima_opcao
 
-    def cabecalho(self):
-        '''Exibe as opções do menu'''
-        print(
-        f'''
+    def exibir_cabecalho(self):
+        print(f'''
     Sistema de Biblioteca Universitária
-    ───────────────────────────────────
-    Menu principal
-        '''
-        )
-        for digito, submenu in self.submenus.items():
-            print(f"[{digito}] - {submenu.nome}")
+    {self.nome}
+        ''')
 
-        # Calcula dinamicamente qual é a última opção e exibe a mensagem de sair/voltar
-        print(f"[{self.max_opcoes}] - Sair")
+    def exibir_opcoes(self):
+        for digito, nome in self.opcoes.items():
+            print(f"[{digito}] - {nome}")
+        ultimo_digito = len(self.opcoes) + 1
+        print(f"[{ultimo_digito}] - ")
 
-    def capturar_digito(self, max) -> str:
-        '''Pergunta ao usuário um dígito dentro do intervalo de opções'''
-        min = 1
-        resposta = input("Escolha: ")
-        if not resposta.isdigit():
-            raise ValueError("ERRO: Somente dígitos são aceitos. Tente novamente.")
-        if not min <= int(resposta) <= max:
-            raise ValueError(f"ERRO: Escolha um dígito entre {min} a {max}")
-        return resposta
-
-    def processar_digito(self, digito):
-        if int(digito) == len(self.submenus) + 1:
-            print("Saindo do sistema...")
-            return False
-
-        submenu = self.submenus[digito]
-        while True:
-            submenu.cabecalho()
-
-            try:
-                resposta = self.capturar_digito(submenu.max_opcoes)
-            except Exception as e:
-                print(e)
-                continue
-
-            resultado = submenu.processar_digito(resposta)
-            if resultado == False: # Se o método retornar False, significa que o usuário escolheu a opção de Voltar.
-                break
-            
     @staticmethod
-    def mensagem(texto):
-        print(texto)
+    def capturar_digito(digito_min: int, digito_max: int) -> int:
+        escolha = input("     Escolha: ")
+        if not escolha.strip() or escolha.isdigit():
+            raise ValueError("Entrada inválida. Digite um número.")
+        if not digito_min <= int(escolha) <= digito_max:
+            raise ValueError(f"Entrada inválida. Digite um número entre {digito_min} e {digito_max}")
+        return int(escolha)
+
+    @staticmethod
+    def cadastrar(campos: dict[str, type]):
+        print('''
+        Preencha as informações a seguir: 
+        ''')
+        respostas = []
+        try:
+            for campo, tipo in campos.items():
+                campo_formatado = campo.capitalize().replace("_", " ")
+                resposta = input(f"{campo_formatado}: ")
+
+                if not resposta.strip():
+                    raise ValueError(f"{campo} não pode ser vazio.")
+                if resposta.isdigit():
+                    resposta = int(resposta)
+                if type(resposta) != tipo:
+                    raise ValueError("Esse tipo de entrada não é válida. Tente novamente.")
+                
+                respostas.append(resposta)
+            return respostas
+        except Exception as e:
+            print(f"\nERRO: {e}\n")
+            return None
+
+    @staticmethod
+    def listar(campos: list[str], entidade: list[tuple]):
+        if not entidade:
+            print("\nNão há cadastros.\n")
+        else:
+            print("\n=== Resultads encontrados: ===\n")
+
+            for tupla in entidade:
+                linha = "| "
+                for i, campo in enumerate(campos):
+                    linha += f"{campo.capitalize()}: {tupla[i]} | "
+                print(linha)
+
+    @staticmethod
+    def atualizar(campos: dict[str, type]):
+        print('''
+            Preencha as informações a seguir: 
+            ''')
+        respostas = []
+        try:
+            for campo, tipo in campos.items():
+                campo_formatado = campo.capitalize().replace("_", " ")
+                resposta = input(f"Novo(a) {campo_formatado}: ")
+
+                if not resposta.strip():
+                    raise ValueError(f"{campo} não pode ser vazio.")
+                if resposta.isdigit():
+                    resposta = int(resposta)
+                if type(resposta) != tipo:
+                    raise ValueError("Esse tipo de entrada não é válida. Tente novamente.")
+                
+                respostas.append(resposta)
+            return respostas
+        except Exception as e:
+            print(f"\nERRO: {e}\n")
+            return None
+
+    @staticmethod
+    def excluir():
+        try:
+            id = int(input("ID a excluir: "))
+            return id
+        except ValueError:
+            print("\nEntrada inválida.\n")
+            return None
+
+    @staticmethod
+    def mensagem(msg):
+        print(msg)
