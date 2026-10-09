@@ -1,4 +1,4 @@
-#TODO: Importar a view e chamá-la na função main.
+#TODO: Importar o controller e chamá-lo na função main.
 
 def main():
     ...
