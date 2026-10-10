@@ -17,7 +17,7 @@ class AutorModel:
             self.conn = psycopg2.connect(
                 dbname="biblioteca_universitaria",
                 user="postgres",
-                password="",
+                password="65266256",
                 host="localhost",
                 port="5432"
             )
@@ -34,9 +34,9 @@ class AutorModel:
             print(f"\nErro ao listar autores: {e}\n")
             return []
     
-    def inserir(self, nome, nacionalidade):
+    def inserir(self, resposta: list):
         try:
-            self.cursor.execute("insert into autor (nome, nacionalidade) values (%s,%s);", (nome, nacionalidade))
+            self.cursor.execute("insert into autor (nome, nacionalidade) values (%s,%s);", (resposta[0], resposta[1]))
             self.conn.commit()
         except Exception as e:
             print(f"\nErro ao inserir autor: {e}\n")
@@ -50,9 +50,12 @@ class AutorModel:
             print(f"\nErro ao verificar a existência do autor: {e}\n")
             return False
         
-    def atualizar(self, id_autor, nome, nacionalidade): # Mesma lógica acima, aqui pode ser que 'id_autor' dê errado
+    def atualizar(self, resposta: list): # Mesma lógica acima, aqui pode ser que 'id_autor' dê errado
+        id_autor = resposta[0]
+        nome = resposta[1]
+        nacionalidade = resposta[2]
         try:
-            if not self.existe_id(id_autor):
+            if not self.existe_id(resposta[0]):
                 print("\nNenhum autor encontrado com esse ID.\n")
                 return False
         

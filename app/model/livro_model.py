@@ -17,7 +17,7 @@ class LivroModel:
             self.conn = psycopg2.connect(
                 dbname="biblioteca_universitaria",
                 user="postgres",
-                password="",
+                password="65266256",
                 host="localhost",
                 port="5432"
             )
@@ -34,7 +34,10 @@ class LivroModel:
             print(f"\nErro ao listar livros: {e}\n")
             return []
     
-    def inserir(self, id_autor, titulo, data_publicacao):
+    def inserir(self, resposta: list):
+        id_autor = resposta[0]
+        titulo = resposta[1]
+        data_publicacao = resposta[2]
         try:
             self.cursor.execute("insert into livro (id_autor, titulo, data_publicacao) values (%s,%s,%s);", (id_autor, titulo, data_publicacao))
             self.conn.commit()
@@ -49,13 +52,18 @@ class LivroModel:
         except Exception as e:
             print(f"\nErro ao verificar a existência do livro: {e}\n")
             return False
-        
-    def atualizar(self, id_livro, id_autor, titulo, data_publicacao): # Mesma lógica acima, aqui pode ser que 'id_livro' dê errado
+
+    #XXX: Quando não há um id correspondente, ele não avisa esse erro.
+    def atualizar(self, resposta: list): # Mesma lógica acima, aqui pode ser que 'id_livro' dê errado
+        id_livro = resposta[0]
+        id_autor = resposta[1]
+        titulo = resposta[2]
+        data_publicacao = resposta[3]
         try:
             if not self.existe_id(id_livro):
                 print("\nNenhum autor encontrado com esse ID.\n")
                 return False
-            self.cursor.execute("update livro set id_autor= %s, titulo= %s, data_publicacao= %s where id= %s;", (id_autor, titulo, data_publicacao))
+            self.cursor.execute("update livro set id_autor= %s, titulo= %s, data_publicacao= %s where id= %s;", (id_autor, titulo, data_publicacao, id_livro))
             self.conn.commit()
             return True
         except Exception as e:

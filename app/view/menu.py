@@ -19,12 +19,12 @@ class Menu:
         for digito, nome in self.opcoes.items():
             print(f"[{digito}] - {nome}")
         ultimo_digito = len(self.opcoes) + 1
-        print(f"[{ultimo_digito}] - ")
+        print(f"[{ultimo_digito}] - {self.msg_ultima_opcao}")
 
     @staticmethod
     def capturar_digito(digito_min: int, digito_max: int) -> int:
         escolha = input("     Escolha: ")
-        if not escolha.strip() or escolha.isdigit():
+        if not escolha.strip() or not escolha.isdigit():
             raise ValueError("Entrada inválida. Digite um número.")
         if not digito_min <= int(escolha) <= digito_max:
             raise ValueError(f"Entrada inválida. Digite um número entre {digito_min} e {digito_max}")
@@ -52,7 +52,6 @@ class Menu:
             return respostas
         except Exception as e:
             print(f"\nERRO: {e}\n")
-            return None
 
     @staticmethod
     def listar(campos: list[str], entidade: list[tuple]):
@@ -76,7 +75,7 @@ class Menu:
         try:
             for campo, tipo in campos.items():
                 campo_formatado = campo.capitalize().replace("_", " ")
-                resposta = input(f"Novo(a) {campo_formatado}: ")
+                resposta = input(f"{campo_formatado}: ")
 
                 if not resposta.strip():
                     raise ValueError(f"{campo} não pode ser vazio.")
@@ -89,7 +88,6 @@ class Menu:
             return respostas
         except Exception as e:
             print(f"\nERRO: {e}\n")
-            return None
 
     @staticmethod
     def excluir():

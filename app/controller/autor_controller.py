@@ -4,87 +4,107 @@ from view.sistema_view import menu_principal, menu_gerenciar_autor, menu_gerenci
 
 class AutorController:
     def __init__(self):
-        self.model = AutorModel()
-        self.model = LivroModel()
-        self.view = menu_principal()
-        self.view = menu_gerenciar_autor()
-        self.view = menu_gerenciar_livro()
-
+        self.autor_model = AutorModel()
+        self.livro_model = LivroModel()
+        
     def executar(self):
         while True:
-            opcao = self.view.sistema_view.menu_principal()
-            if opcao == 1:
-                menu_gerenciar_autor()
-                if opcao == 1:
-                    # Antes tava 'produtos', agora está 'autor'
-                    autor = self.model.listar()
-                    self.view.listar(autor)
-                
-                elif opcao == 2:
-                    nome, nacionalidade = self.view.cadastrar()
-                    if nome and nacionalidade:
-                        self.model.inserir(nome, nacionalidade)
-                        self.view.menu.msg("\nAutor cadastrado com sucesso!\n")
+            menu_principal.exibir_cabecalho()
+            menu_principal.exibir_opcoes()
+            try:
+                opcao = menu_principal.capturar_digito(1, 3)
 
-                elif opcao == 3:
-                    id_autor, nome, nacionalidade = self.view.atualizar()
-                    if id_autor and nome and nacionalidade:
-                        sucesso = self.model.atualizar(id_autor, nome, nacionalidade)
-                        if sucesso:
-                            self.view.menu.msg("\nAutor atualizado com sucesso!\n")
-                        else:
-                            self.view.menu.msg("\nFalha ao atualizar: ID não encontrado.\n")
+                try:
+                    if opcao == 1:
+                        while True:
+                            menu_gerenciar_autor.exibir_cabecalho()
+                            menu_gerenciar_autor.exibir_opcoes()
+                            opcao2 = menu_gerenciar_autor.capturar_digito(1, 5)
 
-                elif opcao == 4:
-                    id_autor = self.view.excluir()
-                    if id_autor:
-                        sucesso = self.model.excluir(id_autor)
-                        if sucesso:
-                            self.view.menu.msg("\nAutor excluído com sucesso!\n")
-                        else:
-                            self.view.menu.msg("\nFalha ao excluir: ID não encontrado.\n")
+                            if opcao2 == 1:
+                                #Cadastrar autor
+                                resposta = menu_gerenciar_autor.cadastrar({
+                                    'nome': str,
+                                    'nacionalidade': str
+                                })
+                                if resposta is None:
+                                    continue
+                                self.autor_model.inserir(resposta)
+                            if opcao2 == 2:
+                                autores = self.autor_model.listar()
+                                menu_gerenciar_autor.listar(
+                                    ["id", "nome", "nacionalidade"],
+                                    autores
+                                )
+                            if opcao2 == 3:
+                                resposta = menu_gerenciar_autor.atualizar({
+                                    'id_autor': int,
+                                    'nome': str,
+                                    'nacionalidade': str
+                                })
+                                if resposta is None: 
+                                    continue
+                                self.autor_model.atualizar(resposta)
 
-                elif opcao == 0:
-                    self.view.menu.msg("\nSaindo do sistema...\n")
+                            if opcao2 == 4:
+                                resposta = menu_gerenciar_autor.excluir()
+                                self.autor_model.excluir(resposta)
+
+                            if opcao2 == 5:
+                                break
+
+                except ValueError as e:
+                    print("ERRO:", e)
+
+                try:
+                    if opcao == 2:
+                        while True:
+                            menu_gerenciar_livro.exibir_cabecalho()
+                            menu_gerenciar_livro.exibir_opcoes()
+                            opcao3 = menu_gerenciar_livro.capturar_digito(1, 5)
+
+                            if opcao3 == 1:
+                                resposta = menu_gerenciar_livro.cadastrar({
+                                    'id_autor': int,
+                                    'titulo': str,
+                                    'data_publicacao': int
+                                })
+                                if resposta is None:
+                                    continue
+                                self.livro_model.inserir(resposta)
+                            if opcao3 == 2:
+                                livros = self.livro_model.listar()
+                                menu_gerenciar_livro.listar(
+                                    ["id_livro", "id_autor", "titulo", "data_publicacao"],
+                                    livros
+                                )
+                            if opcao3 == 3:
+                                resposta = menu_gerenciar_livro.atualizar({
+                                    'id_livro': int,
+                                    'id_autor': int,
+                                    'titulo': str,
+                                    'data_publicacao': int
+                                })
+                                if resposta is None:
+                                    continue
+                                self.livro_model.atualizar(resposta)
+
+                            if opcao3 == 4:
+                                resposta = menu_gerenciar_livro.excluir()
+                                self.livro_model.excluir(resposta)
+
+                            if opcao3 == 5:
+                                break
+
+                except ValueError as e:
+                    print("ERRO:", e)
+
+                if opcao == 3:
+                    menu_principal.mensagem("Saindo do programa...")
                     break
 
-                else:
-                    self.view.menu.msg("\nOpção inválida!\n")
+            except ValueError as e:
+                print("ERRO:", e)
+            
 
-            if opcao == 2:
-                menu_gerenciar_livro()
-                if opcao == 1:
-                    # Antes tava 'produtos', agora está 'autor'
-                    livro = self.model.listar()
-                    self.view.listar(livro)
-                
-                elif opcao == 2:
-                    id_autor, titulo, data_publicacao = self.view.cadastrar()
-                    if id_autor and titulo and data_publicacao: # Revisar isso
-                        self.model.inserir(id_autor, titulo, data_publicacao)
-                        self.view.menu.msg("\nLivro cadastrado com sucesso!\n")
-
-                elif opcao == 3:
-                    id_livro, id_autor, titulo, data_publicacao = self.view.atualizar()
-                    if id_livro and id_autor and titulo and data_publicacao:
-                        sucesso = self.model.atualizar(id_livro, id_autor, titulo, data_publicacao)
-                        if sucesso:
-                            self.view.menu.msg("\nLivro atualizado com sucesso!\n")
-                        else:
-                            self.view.menu.msg("\nFalha ao atualizar: ID não encontrado.\n")
-
-                elif opcao == 4:
-                    id_livro = self.view.excluir()
-                    if id_livro:
-                        sucesso = self.model.excluir(id_livro)
-                        if sucesso:
-                            self.view.menu.msg("\nLivro excluído com sucesso!\n")
-                        else:
-                            self.view.menu.msg("\nFalha ao excluir: ID não encontrado.\n")
-
-                elif opcao == 0:
-                    self.view.menu.msg("\nSaindo do sistema...\n")
-                    break
-
-                else:
-                    self.view.menu.msg("\nOpção inválida!\n")
+    
