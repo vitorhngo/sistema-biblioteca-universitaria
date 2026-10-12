@@ -2,7 +2,7 @@ from model.autor_model import AutorModel
 from model.livro_model import LivroModel
 from view.sistema_view import menu_principal, menu_gerenciar_autor, menu_gerenciar_livro
 
-class AutorController:
+class SistemaController:
     def __init__(self):
         self.autor_model = AutorModel()
         self.livro_model = LivroModel()
