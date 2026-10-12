@@ -1,4 +1,3 @@
-#TODO: Chamar esse módulo no Controller.
 '''
 sistema_view.py: Cria os menus e suas respectivas opções.
 '''

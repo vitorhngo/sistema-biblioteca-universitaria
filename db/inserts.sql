@@ -1,3 +1,5 @@
+-- Insert de dados para facilitar testes do sistema.
+
 INSERT INTO autor (nome, nacionalidade) 
 VALUES	('Machado de Assis', 'Brasileira'),
 		('Clarice Lispector', 'Brasileira'),

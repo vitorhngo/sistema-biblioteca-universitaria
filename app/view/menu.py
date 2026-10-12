@@ -23,7 +23,7 @@ class Menu:
 
     @staticmethod
     def capturar_digito(digito_min: int, digito_max: int) -> int:
-        escolha = input("     Escolha: ")
+        escolha = input("    Escolha: ")
         if not escolha.strip() or not escolha.isdigit():
             raise ValueError("Entrada inválida. Digite um número.")
         if not digito_min <= int(escolha) <= digito_max:
@@ -31,22 +31,26 @@ class Menu:
         return int(escolha)
 
     @staticmethod
-    def cadastrar(campos: dict[str, type]):
+    def formulario(campos: dict[str, type]):
         print('''
-        Preencha as informações a seguir: 
+    Preencha as informações a seguir: 
         ''')
         respostas = []
+        dica_tipo = {
+            str: "texto",
+            int: "dígito"
+        }
         try:
             for campo, tipo in campos.items():
-                campo_formatado = campo.capitalize().replace("_", " ")
-                resposta = input(f"{campo_formatado}: ")
+                campo_formatado = campo.capitalize()
+                resposta = input(f"{campo_formatado} ({dica_tipo[tipo]}): ")
 
                 if not resposta.strip():
-                    raise ValueError(f"{campo} não pode ser vazio.")
+                    raise ValueError(f"{campo_formatado} não pode ser vazio.")
                 if resposta.isdigit():
                     resposta = int(resposta)
                 if type(resposta) != tipo:
-                    raise ValueError("Esse tipo de entrada não é válida. Tente novamente.")
+                    raise ValueError(f"Entrada inválida. Insira um {dica_tipo[tipo]} no campo {campo_formatado}. Tente novamente.")
                 
                 respostas.append(resposta)
             return respostas
@@ -54,7 +58,7 @@ class Menu:
             print(f"\nERRO: {e}\n")
 
     @staticmethod
-    def listar(campos: list[str], entidade: list[tuple]):
+    def listar(campos: list[str], qnt_colunas_menores: int, entidade: list[tuple]):
         if not entidade:
             print("\nNão há cadastros.\n")
         else:
@@ -63,41 +67,21 @@ class Menu:
             for tupla in entidade:
                 linha = "| "
                 for i, campo in enumerate(campos):
-                    linha += f"{campo.capitalize()}: {tupla[i]} | "
+                    max_tamanho_campo = 25 if i > (qnt_colunas_menores - 1) else 3 # Ajusta a primeira coluna para ser menor que as outras
+                    tamanho_campo = max_tamanho_campo - len(str(tupla[i]))
+
+                    linha += f"{campo.capitalize()}: {str(tupla[i]) + " " * tamanho_campo} | "
                 print(linha)
-
-    @staticmethod
-    def atualizar(campos: dict[str, type]):
-        print('''
-            Preencha as informações a seguir: 
-            ''')
-        respostas = []
-        try:
-            for campo, tipo in campos.items():
-                campo_formatado = campo.capitalize().replace("_", " ")
-                resposta = input(f"{campo_formatado}: ")
-
-                if not resposta.strip():
-                    raise ValueError(f"{campo} não pode ser vazio.")
-                if resposta.isdigit():
-                    resposta = int(resposta)
-                if type(resposta) != tipo:
-                    raise ValueError("Esse tipo de entrada não é válida. Tente novamente.")
-                
-                respostas.append(resposta)
-            return respostas
-        except Exception as e:
-            print(f"\nERRO: {e}\n")
 
     @staticmethod
     def excluir():
         try:
-            id = int(input("ID a excluir: "))
+            id = int(input("Id a excluir (digito): "))
             return id
         except ValueError:
-            print("\nEntrada inválida.\n")
+            print("\nEntrada inválida. Insira um dígito no campo Id\n")
             return None
 
     @staticmethod
     def mensagem(msg):
-        print(msg)
+        print("\n" + msg)

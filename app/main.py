@@ -1,12 +1,10 @@
-# #TODO: Importar a view e chamá-la na função main.
+import sys
+from pathlib import Path
 
-# def main():
-#     ...
+ROOT_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT_DIR))
 
-# if __name__ == "__main__":
-#     main()
-
-from controller.autor_controller import AutorController
+from app.controller.sistema_controller import AutorController
 
 if __name__ == "__main__":
     app = AutorController()
