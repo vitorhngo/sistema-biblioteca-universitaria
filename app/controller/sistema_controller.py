@@ -26,7 +26,6 @@ class SistemaController:
     def executar(self):
         self.tela_menu_principal()
 
-
     # ── Menu principal ────────────────────────────────────────────────
     def tela_menu_principal(self):
         while True:
@@ -39,7 +38,7 @@ class SistemaController:
                     break
                 self.menu_principal_opcoes[opcao]()
             except ValueError as e:
-                menu_gerenciar_autor.mensagem(f"ERRO: {e}")
+                menu_principal.mensagem(f"ERRO: {e}")
 
 
 
@@ -65,7 +64,7 @@ class SistemaController:
             return
         resultado = self.autor_model.inserir(resposta)
         if resultado['sucesso']:
-            menu_gerenciar_autor.mensagem("Autor cadastrado com sucesso!")
+            menu_gerenciar_autor.mensagem("Autor(a) cadastrado(a) com sucesso!")
         else:
             menu_gerenciar_autor.mensagem(f"ERRO: {resultado['erro']}")
 
@@ -78,11 +77,11 @@ class SistemaController:
         )
 
     def tela_atualizar_autor(self):
-        self.autor_model.listar()
+        self.tela_listar_autor()
         resposta = menu_gerenciar_autor.formulario({
             'id autor': int,
-            'nome': str,
-            'nacionalidade': str
+            'novo nome': str,
+            'nova nacionalidade': str
         })
         if resposta is None: 
             return
@@ -92,9 +91,8 @@ class SistemaController:
         else:
             menu_gerenciar_autor.mensagem(f"ERRO: {resultado['erro']}")
 
-
     def tela_excluir_autor(self):
-        self.autor_model.listar()
+        self.tela_listar_autor()
         resposta = menu_gerenciar_autor.excluir()
         if resposta is None:
             return
@@ -117,13 +115,13 @@ class SistemaController:
                     break
                 self.menu_gerenciar_livro_opcoes[opcao]()
             except ValueError as e:
-                menu_gerenciar_autor.mensagem(f"ERRO: {e}")
+                menu_gerenciar_livro.mensagem(f"ERRO: {e}")
 
     def tela_cadastrar_livro(self):
         resposta = menu_gerenciar_livro.formulario({
             'id autor': int,
             'título': str,
-            'data publicacão': int
+            'data de publicacão': int
         })
         if resposta is None:
             return
@@ -134,20 +132,20 @@ class SistemaController:
             menu_gerenciar_livro.mensagem(f"ERRO: {resultado['erro']}")
 
     def tela_listar_livro(self):
-        autores = self.livro_model.listar()
+        livros = self.livro_model.listar()
         menu_gerenciar_livro.listar(
-            ["id livro", "id autor", "título", "data publicacão"],
+            ["id livro", "id autor", "título", "data de publicacão"],
             2,
-            autores
+            livros
         )
 
     def tela_atualizar_livro(self):
-        self.livro_model.listar()
+        self.tela_listar_livro()
         resposta = menu_gerenciar_livro.formulario({
             'id livro': int,
             'id autor': int,
-            'título': str,
-            'data publicacão': int
+            'novo título': str,
+            'nova data de publicacão': int
         })
         if resposta is None: 
             return
@@ -158,7 +156,7 @@ class SistemaController:
             menu_gerenciar_livro.mensagem(f"ERRO: {resultado['erro']}")
 
     def tela_excluir_livro(self):
-        self.livro_model.listar()
+        self.tela_listar_livro()
         resposta = menu_gerenciar_livro.excluir()
         if resposta is None:
             return

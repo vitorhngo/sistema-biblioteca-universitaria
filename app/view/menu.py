@@ -50,7 +50,7 @@ class Menu:
                 if resposta.isdigit():
                     resposta = int(resposta)
                 if type(resposta) != tipo:
-                    raise ValueError(f"Entrada inválida. Insira um {dica_tipo[tipo]} no campo {campo_formatado}. Tente novamente.")
+                    raise ValueError(f"Entrada inválida. Insira um {dica_tipo[tipo]} no campo {campo_formatado}.")
                 
                 respostas.append(resposta)
             return respostas
@@ -67,7 +67,7 @@ class Menu:
             for tupla in entidade:
                 linha = "| "
                 for i, campo in enumerate(campos):
-                    max_tamanho_campo = 25 if i > (qnt_colunas_menores - 1) else 3 # Ajusta a primeira coluna para ser menor que as outras
+                    max_tamanho_campo = 25 if i > (qnt_colunas_menores - 1) else 3
                     tamanho_campo = max_tamanho_campo - len(str(tupla[i]))
 
                     linha += f"{campo.capitalize()}: {str(tupla[i]) + " " * tamanho_campo} | "
